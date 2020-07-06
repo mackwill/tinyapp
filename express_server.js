@@ -33,6 +33,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
+
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
@@ -40,15 +41,21 @@ app.get("/urls/:shortURL", (req, res) => {
   };
   res.render("urls_show", templateVars);
 });
+
+app.get("/u/:shortURL", (req, res) => {
+  res.redirect(urlDatabase[req.params.shortURL]);
+});
+
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 app.post("/urls", (req, res) => {
-  req.body.shortURL = generateRandomString(6);
   console.log("req.body: ", req.body);
-
-  res.send(`${req.body.shortURL}`);
+  let newShortURL = generateRandomString(6);
+  urlDatabase[newShortURL] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${newShortURL}`);
 });
 
 app.listen(PORT, () => {
