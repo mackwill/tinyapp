@@ -1,5 +1,7 @@
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-success">
+  <nav
+    class="navbar navbar-expand-md navbar-dark bg-success d-inline-flex container-fluid"
+  >
     <a class="navbar-brand" href="/urls">TinyApp</a>
     <button
       class="navbar-toggler"
@@ -13,27 +15,33 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="navbar-nav col-md-6">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
 
-      <% console.log('user: ', user) %>
-      <div class="text-right">
+      <div class="w-100 d-flex text-right justify-content-end">
         <% if (user === undefined) {%>
-        <form method="POST" action="/login" class="form-inline text-right">
-          <div class="form-group mx-sm-3">
-            <input
-              name="email"
-              type="email"
-              class="form-control"
-              placeholder="Email"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">
-            Submit
-          </button>
-        </form>
+        <div class="text-right d-flex col-md-6 float-right">
+          <form
+            method="GET"
+            action="/register"
+            class="form-inline text-right mx-2"
+          >
+            <button type="submit" class="btn btn-outline-dark" action>
+              Register
+            </button>
+          </form>
+          <form
+            method="GET"
+            action="/login"
+            class="form-inline text-right mx-2"
+          >
+            <button type="submit" class="btn btn-outline-dark" action>
+              Login
+            </button>
+          </form>
+        </div>
 
         <%} else {%>
 
