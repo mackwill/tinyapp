@@ -10,7 +10,7 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon d-flex"></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
@@ -18,42 +18,41 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
 
-      <% if (username === undefined) {%>
-      <form method="POST" action="/login" class="form-inline text-right">
-        <div class="form-group mx-sm-3">
-          <input
-            name="username"
-            type="text"
-            class="form-control"
-            placeholder="Username"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">
-          Submit
-        </button>
-        <button type="submit" class="btn btn-primary d-none">
-          Logout
-        </button>
-      </form>
+      <% console.log('user: ', user) %>
+      <div class="text-right">
+        <% if (user === undefined) {%>
+        <form method="POST" action="/login" class="form-inline text-right">
+          <div class="form-group mx-sm-3">
+            <input
+              name="email"
+              type="email"
+              class="form-control"
+              placeholder="Email"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Submit
+          </button>
+        </form>
 
-      <%} else {%>
+        <%} else {%>
 
-      <form class="form-inline" method="POST" action="/logout">
-        <div class="form-group">
-          <label for="logout" class="sr-only">Email</label>
-          <input
-            type="text"
-            readonly
-            class="form-control-plaintext"
-            id="logout"
-            value="Welcome <%= username %>!"
-          />
-        </div>
-        <button type="submit" class="btn btn-outline-secondary">
-          Logout
-        </button>
-      </form>
-      <% } %>
+        <form class="form-inline" method="POST" action="/logout">
+          <div class="form-group">
+            <label for="logout" class="sr-only">Email</label>
+            <input
+              type="text"
+              class="form-control-plaintext"
+              id="logout"
+              value="Welcome <%= user.email %>"
+            />
+          </div>
+          <button type="submit" class="btn btn-outline-secondary">
+            Logout
+          </button>
+        </form>
+        <% } %>
+      </div>
     </div>
   </nav>
 </header>
