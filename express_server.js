@@ -127,17 +127,26 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // Object.keys(users).forEach((elem) => {
-  //   if (users[elem].email === req.body.email) {
-  //     res.cookie("user_id", elem);
-  //     return;
-  //   }
-  // });
-
   console.log(
     "findUserByEmail(users, req.body.email)",
     findUserByEmail(users, req.body.email)
   );
+
+  const selectedUser = findUserByEmail(users, req.body.email);
+
+  if (selectedUser === false) {
+    res.statusCode = 403;
+    res.send(
+      `Status code: ${res.statusCode}. Nicolas Cage didn't find your email.`
+    );
+    return;
+  } else if (users[selectedUser].password !== req.body.password) {
+    res.statusCode = 403;
+    res.send(
+      `Status code: ${res.statusCode}. Nicolas Cage didn't match your email and password.`
+    );
+    return;
+  }
 
   res.cookie("user_id", findUserByEmail(users, req.body.email));
 
