@@ -22,7 +22,7 @@
 
       <div class="w-100 d-flex text-right justify-content-end">
         <% if (user === undefined) {%>
-        <div class="text-right d-flex col-md-6 float-right">
+        <div class="text-right d-flex col-md-6 float-right justify-content-end">
           <form
             method="GET"
             action="/register"
@@ -47,15 +47,9 @@
 
         <form class="form-inline" method="POST" action="/logout">
           <div class="form-group">
-            <label for="logout" class="sr-only">Email</label>
-            <input
-              type="text"
-              class="form-control-plaintext"
-              id="logout"
-              value="Welcome <%= user.email %>"
-            />
+            <p class="my-0">Welcome <%= user.email %>!</p>
           </div>
-          <button type="submit" class="btn btn-outline-secondary">
+          <button type="submit" class="btn btn-outline-secondary mx-2">
             Logout
           </button>
         </form>
