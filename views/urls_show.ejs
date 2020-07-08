@@ -20,7 +20,11 @@
       <div class="card-header"></div>
       <% if (error !== null) { %>
       <div class="card-body">
-        <div class="alert alert-warning mt-3" id="checkInfoAlert" role="alert">
+        <div
+          class="alert alert-warning mt-3 text-center"
+          id="checkInfoAlert"
+          role="alert"
+        >
           <%= error %>
         </div>
       </div>
@@ -29,6 +33,9 @@
         <h5 class="card-title">TinyURL for: <%= longURL%></h5>
         <p class="card-text">
           shortURL: <a href="/u/<%= shortURL %>"><%= shortURL%></a>
+        </p>
+        <p class="card-text">
+          <%console.log('created: ', created) %> Date Created: <%= created %>
         </p>
       </div>
       <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
