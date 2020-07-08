@@ -49,6 +49,15 @@
         </div> -->
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
+          <% if (user === false) { %>
+          <div
+            class="alert alert-warning mt-3"
+            id="checkInfoAlert"
+            role="alert"
+          >
+            <span><%= msg %></span>
+          </div>
+          <% } %>
         </div>
         <!-- <div class="col-md-3"></div> -->
       </div>

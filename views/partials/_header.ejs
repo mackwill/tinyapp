@@ -21,14 +21,18 @@
       </div>
 
       <div class="w-100 d-flex text-right justify-content-end">
-        <% if (user === undefined) {%>
+        <% if (user === undefined || user === false) {%>
         <div class="text-right d-flex col-md-6 float-right justify-content-end">
           <form
             method="GET"
             action="/register"
             class="form-inline text-right mx-2"
           >
-            <button type="submit" class="btn btn-outline-dark" action>
+            <button
+              type="submit"
+              class="btn btn-outline-dark text-white border-white"
+              action
+            >
               Register
             </button>
           </form>
@@ -37,7 +41,11 @@
             action="/login"
             class="form-inline text-right mx-2"
           >
-            <button type="submit" class="btn btn-outline-dark" action>
+            <button
+              type="submit"
+              class="btn btn-outline-dark text-white border-white"
+              action
+            >
               Login
             </button>
           </form>
@@ -47,9 +55,12 @@
 
         <form class="form-inline" method="POST" action="/logout">
           <div class="form-group">
-            <p class="my-0">Welcome <%= user.email %>!</p>
+            <p class="my-0 text-white">Welcome <%= user.email %>!</p>
           </div>
-          <button type="submit" class="btn btn-outline-secondary mx-2">
+          <button
+            type="submit"
+            class="btn btn-outline-secondary mx-2 text-white border-white"
+          >
             Logout
           </button>
         </form>
