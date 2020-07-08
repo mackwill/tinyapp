@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(cookieParser());
@@ -44,13 +45,13 @@ const users = {
   "jonSnow": {
     id: "jonSnow",
     email: "snowyguy@gmail.com",
-    password: "the-north",
+    password: bcrypt.hashSync("the-north", 10),
   },
 
   "NicolasCageSupreme": {
     id: "NicolasCageSupreme",
     email: "thenicolascage@thecage.com",
-    password: "theKing",
+    password: bcrypt.hashSync("theKing", 10),
   },
 };
 
@@ -64,7 +65,6 @@ app.get("/urls", (req, res) => {
   let templateVars = {};
 
   if (user === undefined) {
-    console.log("please log in");
     templateVars = { urls: {}, user };
     res.render("urls_index", templateVars);
     return;
@@ -72,7 +72,6 @@ app.get("/urls", (req, res) => {
 
   const filteredURLs = urlsForUser(user.id);
 
-  console.log(filteredURLs);
   templateVars = { urls: filteredURLs, user };
 
   res.render("urls_index", templateVars);
@@ -108,7 +107,6 @@ app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.cookies["user_id"]];
 
   if (user === undefined) {
-    console.log("please log in");
     res.redirect("/urls");
     return;
   }
@@ -123,8 +121,6 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  console.log("req.body:", req.body);
-
   res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
@@ -137,7 +133,6 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   let user = users[req.cookies["user_id"]];
   if (user === undefined) {
-    console.log("Did not delete, please log in");
     res.redirect("/urls");
     return;
   }
@@ -151,7 +146,8 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let { email, password } = req.body;
+  let email = req.body.email;
+  let password = bcrypt.hashSync(req.body.password, 10);
 
   if (email === "" || password === "") {
     res.statusCode = 400;
@@ -165,8 +161,8 @@ app.post("/register", (req, res) => {
   const newId = generateRandomString(6);
   users[newId] = {
     newId,
-    email: req.body.email,
-    password: req.body.password,
+    email,
+    password,
   };
 
   res.cookie("user_id", newId);
@@ -182,7 +178,9 @@ app.post("/login", (req, res) => {
       `Status code: ${res.statusCode}. Nicolas Cage didn't find your email.`
     );
     return;
-  } else if (users[selectedUser].password !== req.body.password) {
+  } else if (
+    !bcrypt.compareSync(req.body.password, users[selectedUser].password)
+  ) {
     res.statusCode = 403;
     res.send(
       `Status code: ${res.statusCode}. Nicolas Cage didn't match your email and password.`
