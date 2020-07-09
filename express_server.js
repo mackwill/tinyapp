@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
+const methodOverride = require("method-override");
 
 const {
   generateRandomString,
@@ -16,6 +17,7 @@ const app = express();
 app.use(cookieParser());
 const PORT = 8080;
 
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -30,11 +32,13 @@ const urlDatabase = {
     longURL: "http://www.lighthouselabs.ca",
     userID: "jonSnow",
     dateCreated: "05/11/2017",
+    visits: 0,
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "NicolasCageSupreme",
     dateCreated: "05/05/2020",
+    visits: 0,
   },
 };
 
@@ -89,10 +93,10 @@ app.get("/urls/:shortURL", (req, res) => {
   templateVars = checkForExistingShortURL(
     req.params.shortURL,
     urlDatabase,
+    users,
     req.session.user_id
   );
 
-  console.log("templateVars: ", templateVars);
   res.render("urls_show", templateVars);
 });
 
@@ -106,8 +110,12 @@ app.get("/urls", (req, res) => {
     return;
   }
 
+  console.log("user: ", user);
   const filteredURLs = urlsForUser(user.id, urlDatabase);
+  console.log("filtered urls", filteredURLs);
+
   templateVars = { urls: filteredURLs, user, error: null };
+  console.log("templatevars ", templateVars);
 
   res.render("urls_index", templateVars);
 });
@@ -144,6 +152,7 @@ app.get("/u/:shortURL", (req, res) => {
     res.render("urls_index", templateVars);
     return;
   }
+  urlDatabase[req.params.shortURL].visits += 1;
   res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
@@ -159,6 +168,7 @@ app.post("/urls", (req, res) => {
     userID: req.session.user_id,
     longURL: req.body.longURL,
     dateCreated: createCurrentDate(),
+    visits: 0,
   };
 
   res.redirect(`/urls/${newShortURL}`);
@@ -184,27 +194,24 @@ app.post("/register", (req, res) => {
   let password = bcrypt.hashSync(req.body.password, 10);
 
   if (email === "" || req.body.password === "") {
-    // res.statusCode = 400;
+    res.statusCode = 400;
     res.render("register", {
       user: false,
       msg: `Please fill in all fields.`,
     });
-
     return;
   } else if (findUserByEmail(email, users)) {
-    // res.statusCode = 400;
-
+    res.statusCode = 400;
     res.render("register", {
       user: false,
       msg: `This user already has an account.`,
     });
-
     return;
   }
 
   const newId = generateRandomString(6);
   users[newId] = {
-    newId,
+    id: newId,
     email,
     password,
   };

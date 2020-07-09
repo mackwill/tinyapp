@@ -24,6 +24,7 @@ const urlsForUser = (id, database) => {
       filteredURLs[url] = {
         longURL: database[url].longURL,
         created: database[url].dateCreated,
+        numVisits: database[url].visits,
       };
     }
   });
@@ -31,7 +32,7 @@ const urlsForUser = (id, database) => {
   return filteredURLs;
 };
 
-const checkForExistingShortURL = (shortURL, database, id) => {
+const checkForExistingShortURL = (shortURL, database, users, id) => {
   let templateVars = {};
 
   if (database[shortURL] === undefined) {
@@ -40,9 +41,10 @@ const checkForExistingShortURL = (shortURL, database, id) => {
     templateVars = {
       shortURL: shortURL,
       longURL: database[shortURL].longURL,
-      user: id,
+      user: users[id],
       created: database[shortURL].dateCreated,
       error: null,
+      numVisits: database[shortURL].visits,
     };
   }
 
