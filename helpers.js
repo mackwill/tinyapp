@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 const generateRandomString = (length) => {
   return Math.random().toString(36).substr(2, length);
 };
@@ -72,6 +74,17 @@ const registerUser = (email, plainPass, database) => {
   return true;
 };
 
+const isValidShortUrl = (user, database, shortURL) => {
+  if (user === undefined) {
+    return `Please log in to view your shortURLs`;
+  }
+  let urls = urlsForUser(user.id, database);
+  if (!Object.keys(urls).includes(shortURL)) {
+    return "Please enter a valid shortURL.";
+  }
+  return true;
+};
+
 module.exports = {
   generateRandomString,
   findUserByEmail,
@@ -80,4 +93,5 @@ module.exports = {
   checkForExistingShortURL,
   authenticateUser,
   registerUser,
+  isValidShortUrl,
 };

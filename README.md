@@ -28,6 +28,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
   - Hashed user passwords
 - Create new short URL from a regular URL
 - Store and display short URLs unique to user (currently clears with session)
+- Edit an existing short URL
+-
+- Tracks number of visits to a short URL in a session
 
 ## Further Development
 

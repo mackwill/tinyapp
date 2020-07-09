@@ -13,6 +13,7 @@ const {
   checkForExistingShortURL,
   authenticateUser,
   registerUser,
+  isValidShortUrl,
 } = require("./helpers");
 
 const app = express();
@@ -75,24 +76,19 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.session.user_id];
-  let templateVars = {};
-  if (user === undefined) {
-    res.redirect("/urls");
-    return;
-  } else if (
-    urlsForUser(req.session.user_id, urlDatabase).hasOwnProperty(
-      req.params.shortURL
-    ) === false
-  ) {
-    templateVars = {
-      user: user,
-      error: "Please enter a valid shortURL.",
-    };
-    res.render("urls_index", templateVars);
+
+  const isShortURLValid = isValidShortUrl(
+    user,
+    urlDatabase,
+    req.params.shortURL
+  );
+
+  if (isShortURLValid !== true) {
+    res.render("urls_index", { user, error: isShortURLValid });
     return;
   }
 
-  templateVars = checkForExistingShortURL(
+  let templateVars = checkForExistingShortURL(
     req.params.shortURL,
     urlDatabase,
     users,
@@ -112,12 +108,9 @@ app.get("/urls", (req, res) => {
     return;
   }
 
-  console.log("user: ", user);
   const filteredURLs = urlsForUser(user.id, urlDatabase);
-  console.log("filtered urls", filteredURLs);
 
   templateVars = { urls: filteredURLs, user, error: null };
-  console.log("templatevars ", templateVars);
 
   res.render("urls_index", templateVars);
 });
@@ -217,8 +210,6 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const selectedUser = findUserByEmail(req.body.email, users);
-
   authenticateUser(req.body.email, users, req.body.password);
 
   let authenticated = authenticateUser(
@@ -244,5 +235,5 @@ app.post("/logout", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
