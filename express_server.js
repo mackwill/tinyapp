@@ -11,6 +11,8 @@ const {
   urlsForUser,
   createCurrentDate,
   checkForExistingShortURL,
+  authenticateUser,
+  registerUser,
 } = require("./helpers");
 
 const app = express();
@@ -192,19 +194,13 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/register", (req, res) => {
   let email = req.body.email;
   let password = bcrypt.hashSync(req.body.password, 10);
+  let registered = registerUser(email, req.body.password, users);
 
-  if (email === "" || req.body.password === "") {
+  if (registered !== true) {
     res.statusCode = 400;
     res.render("register", {
       user: false,
-      msg: `Please fill in all fields.`,
-    });
-    return;
-  } else if (findUserByEmail(email, users)) {
-    res.statusCode = 400;
-    res.render("register", {
-      user: false,
-      msg: `This user already has an account.`,
+      msg: registered,
     });
     return;
   }
@@ -223,30 +219,22 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   const selectedUser = findUserByEmail(req.body.email, users);
 
-  if (selectedUser === undefined) {
+  authenticateUser(req.body.email, users, req.body.password);
+
+  let authenticated = authenticateUser(
+    req.body.email,
+    users,
+    req.body.password
+  );
+  if (authenticated !== true) {
     res.statusCode = 403;
     res.render("login", {
       user: false,
-      msg: `You do not seem to have an account with us.`,
-    });
-    return;
-  } else if (
-    !bcrypt.compareSync(req.body.password, users[selectedUser].password)
-  ) {
-    res.statusCode = 403;
-    res.render("login", {
-      user: false,
-      msg: `The provided details do not match our records.`,
+      msg: authenticated,
     });
     return;
   }
-
   req.session.user_id = findUserByEmail(req.body.email, users);
-
-  let templateVars = {
-    user: users[req.session.user_id],
-  };
-
   res.redirect("/urls");
 });
 

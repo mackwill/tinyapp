@@ -50,10 +50,34 @@ const checkForExistingShortURL = (shortURL, database, users, id) => {
 
   return templateVars;
 };
+
+const authenticateUser = (email, database, plainPass) => {
+  const selectedUser = findUserByEmail(email, database);
+  if (selectedUser === undefined) {
+    let msg = "You do not seem to have an account with us.";
+    return msg;
+  } else if (!bcrypt.compareSync(plainPass, database[selectedUser].password)) {
+    let msg = `The provided details do not match our records.`;
+    return msg;
+  }
+  return true;
+};
+
+const registerUser = (email, plainPass, database) => {
+  if (email === "" || plainPass === "") {
+    return "Please fill in all fields.";
+  } else if (findUserByEmail(email, database)) {
+    return `This user already has an account.`;
+  }
+  return true;
+};
+
 module.exports = {
   generateRandomString,
   findUserByEmail,
   urlsForUser,
   createCurrentDate,
   checkForExistingShortURL,
+  authenticateUser,
+  registerUser,
 };
