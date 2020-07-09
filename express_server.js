@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: "session",
-    keys: ["user_id"],
+    keys: ["userId"],
   })
 );
 
@@ -63,7 +63,7 @@ const users = {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    user: users[req.session.user_id],
+    user: users[req.session.userId],
     created: createCurrentDate(),
   };
 
@@ -75,7 +75,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user = users[req.session.user_id];
+  const user = users[req.session.userId];
 
   const isShortURLValid = isValidShortUrl(
     user,
@@ -92,14 +92,14 @@ app.get("/urls/:shortURL", (req, res) => {
     req.params.shortURL,
     urlDatabase,
     users,
-    req.session.user_id
+    req.session.userId
   );
 
   res.render("urls_show", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  const user = users[req.session.user_id];
+  const user = users[req.session.userId];
   let templateVars = {};
 
   if (user === undefined) {
@@ -116,24 +116,24 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  if (req.session.user_id !== undefined) {
+  if (req.session.userId !== undefined) {
     res.redirect("/urls");
     return;
   }
 
   let templateVars = {
-    user: users[req.session.user_id],
+    user: users[req.session.userId],
   };
   res.render("register", templateVars);
 });
 
 app.get("/login", (req, res) => {
-  if (req.session.user_id !== undefined) {
+  if (req.session.userId !== undefined) {
     res.redirect("/urls");
     return;
   }
   let templateVars = {
-    user: users[req.session.user_id],
+    user: users[req.session.userId],
   };
   res.render("login", templateVars);
 });
@@ -160,7 +160,7 @@ app.get("/", (req, res) => {
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString(6);
   urlDatabase[newShortURL] = {
-    userID: req.session.user_id,
+    userID: req.session.userId,
     longURL: req.body.longURL,
     dateCreated: createCurrentDate(),
     visits: 0,
@@ -170,7 +170,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  let user = users[req.session.user_id];
+  let user = users[req.session.userId];
   if (user === undefined) {
     res.redirect("/urls");
     return;
@@ -205,7 +205,7 @@ app.post("/register", (req, res) => {
     password,
   };
 
-  req.session.user_id = newId;
+  req.session.userId = newId;
   res.redirect("/urls");
 });
 
@@ -225,7 +225,7 @@ app.post("/login", (req, res) => {
     });
     return;
   }
-  req.session.user_id = findUserByEmail(req.body.email, users);
+  req.session.userId = findUserByEmail(req.body.email, users);
   res.redirect("/urls");
 });
 
