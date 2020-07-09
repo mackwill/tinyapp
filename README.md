@@ -4,8 +4,8 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Register User"]()
-!["My URLs Home Page"](#)
+!["Register User"](https://github.com/mackwill/tinyapp/blob/master/assets/createAccount.png)
+!["My URLs Home Page"](https://github.com/mackwill/tinyapp/blob/master/assets/myURLs.png)
 
 ## Dependencies
 
@@ -20,3 +20,19 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 - Install all dependencies (using the `npm install` command).
 - Run the development web server using the `node express_server.js` command.
+
+## Current Functionality
+
+- Register a new user
+- Log in as existing user
+  - Hashed user passwords
+- Create new short URL from a regular URL
+- Store and display short URLs unique to user (currently clears with session)
+
+## Further Development
+
+- Convert to Material-UI from Bootstrap
+- Add a number of "unique" visitors when showing URLs
+- Track and output the visit history of each short URL and display on the edit page
+- Update registration to take in a username and a "confirm password" requirement
+- Store users in database instead of a variable
